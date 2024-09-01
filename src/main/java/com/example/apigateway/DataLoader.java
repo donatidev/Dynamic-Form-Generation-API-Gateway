@@ -19,7 +19,7 @@ public class DataLoader {
         return args -> {
             // Create and save users
             List<User> users = Arrays.asList(
-                createUser("Nicolas", "Smith", "1985-03-15", "New York", "Male", "123 Apple St, NYC"),
+                createUser("Nicolas", "Donati", null, null, null, null),
                 createUser("Nick", "Johnson", "1990-07-22", "Los Angeles", "Male", null),
                 createUser("Nico", "Williams", "1988-11-30", "Chicago", "Male", "456 Oak Ave, Chicago"),
                 createUser("Nikolas", "Brown", "1992-05-18", null, "Male", "789 Pine Rd, Houston"),
@@ -29,7 +29,7 @@ public class DataLoader {
                 createUser("Nicolás", "Garcia", "1986-12-07", "San Francisco", "Male", "987 Elm St, San Francisco"),
                 createUser("Nik", "Martinez", "1994-04-20", "Denver", "Male", null),
                 createUser("Nikolai", "Anderson", "1989-08-14", "Phoenix", "Male", "147 Maple Ave, Phoenix")
-            );
+                );
 
             userRepository.saveAll(users);
 

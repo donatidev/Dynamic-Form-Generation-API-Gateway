@@ -29,11 +29,14 @@ public class UserController {
     @PostMapping(value = "/{userId}/submit-form", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> submitForm(@PathVariable Long userId, @RequestBody Map<String, String> formData) {
         try {
+            System.out.println("Received form data for user " + userId + ": " + formData);
             userService.updateUserFields(userId, formData);
             thirdPartyServiceClient.submitUserData(formData);
+            System.out.println("User data updated successfully");
             return ResponseEntity.ok("Data updated successfully and sent to third-party service");
         } catch (Exception e) {
             e.printStackTrace(); // Log the exception
+            System.err.println("Error updating user data: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Error occurred: " + e.getMessage());
         }

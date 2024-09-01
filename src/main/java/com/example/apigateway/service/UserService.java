@@ -49,18 +49,25 @@ public class UserService {
         }
     }
 
-    public void updateUserFields(Long userId, Map<String, String> fields) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-        
-        fields.forEach((key, value) -> {
+    public void updateUserFields(Long userId, Map<String, String> formData) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+
+        System.out.println("Updating fields for user " + userId);
+        formData.forEach((key, value) -> {
+            System.out.println("Updating field: " + key + " with value: " + value);
             switch (key) {
+                case "firstName": user.setFirstName(value); break;
+                case "lastName": user.setLastName(value); break;
                 case "birthDate": user.setBirthDate(value); break;
                 case "birthPlace": user.setBirthPlace(value); break;
                 case "sex": user.setSex(value); break;
                 case "currentAddress": user.setCurrentAddress(value); break;
+                default: System.out.println("Unknown field: " + key);
             }
         });
 
         userRepository.save(user);
+        System.out.println("User saved successfully");
     }
 }

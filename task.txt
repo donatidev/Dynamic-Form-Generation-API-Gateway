@@ -1,0 +1,42 @@
+We are building an API-gateway. Because different systems we connect to 
+require different initial parameters to make requests, our API-gateway 
+needs to ask the user for some extra inputs in order to make a call to the
+system.
+
+For example, in the database we have users' First name and Last name.
+In order to connect to some system, we need to provide:
+- First name
+- Last name
+- Birthdate
+- Birthplace
+- Sex
+- Current address
+As you can see, there are certain missing fields that we need to ask
+from the user (Birthdate, Birthplace, Sex, Current address).
+Therefore, we need to build dynamic form based on the backend response,
+that asks the user to provide those missing fields.
+
+We should use Spring Boot, Spring Data JPA, Spring MVC.
+
+Your task is to create sample Spring Boot application that has 2 endpoints:
+1. Imagine what backend endpoint to get which fields are missing in 
+order to render the form may look like. Based on that:
+Create REST endpoint that:
+  - Reads available fields from database
+  - Reads required fields from database
+  - Computes which fields are necessary to be received from user
+  - Produce the JSON-response from the above. Frontend should be 
+  able to generate dynamic form out of this response.
+  
+2. Imagine what backend endpoint to post this dynamic form may look like.
+Create REST endpoint that:
+   - Persists user response
+   - Imitates the call to some imaginary 3rd party service with the
+   all the necessary parameters (First name, Last name, Birthdate,
+   Birthplace, Sex, Current address) using Spring boot + Feign.
+   The imaginary service API URL must come from database
+
+We would like to see:
+Sample application with 2 endpoints as described.
+
+Do not spend more than 3 hours on the task. Application might be not fully functional, we are interested in your approach.

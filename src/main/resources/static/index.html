@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Gateway User Form</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; }
+        input { width: 100%; padding: 5px; }
+        button { padding: 10px; background-color: #007bff; color: white; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>User Information Form</h1>
+    <div id="form-container"></div>
+
+    <script>
+        const userId = 1;
+
+        async function fetchMissingFields() {
+            const response = await fetch(`/api/users/${userId}/missing-fields`);
+            const data = await response.json();
+            console.log('Missing fields response:', data);
+            return data.missingFields || [];
+        }
+
+        async function createForm() {
+            try {
+                const missingFields = await fetchMissingFields();
+                console.log('Missing fields:', missingFields);
+                
+                if (missingFields.length === 0) {
+                    console.log('No missing fields returned');
+                    document.getElementById('form-container').innerHTML = '<p>No fields to update.</p>';
+                    return;
+                }
+
+                const formContainer = document.getElementById('form-container');
+                
+                const form = document.createElement('form');
+                form.id = 'user-form';
+
+                missingFields.forEach(field => {
+                    const formGroup = document.createElement('div');
+                    formGroup.className = 'form-group';
+
+                    const label = document.createElement('label');
+                    label.textContent = field.charAt(0).toUpperCase() + field.slice(1);
+                    label.htmlFor = field;
+
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.id = field;
+                    input.name = field;
+                    input.required = true;
+
+                    formGroup.appendChild(label);
+                    formGroup.appendChild(input);
+                    form.appendChild(formGroup);
+                });
+
+                const submitButton = document.createElement('button');
+                submitButton.type = 'submit';
+                submitButton.textContent = 'Submit';
+                form.appendChild(submitButton);
+
+                form.addEventListener('submit', handleSubmit);
+
+                formContainer.appendChild(form);
+            } catch (error) {
+                console.error('Error creating form:', error);
+                document.getElementById('form-container').innerHTML = '<p>Error loading form. Please try again later.</p>';
+            }
+        }
+
+        async function handleSubmit(event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            console.log('Submitting data:', data);
+
+            try {
+                const response = await fetch(`/api/users/${userId}/submit-form`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                });
+
+                console.log('Response status:', response.status);
+                const responseText = await response.text();
+                console.log('Response body:', responseText);
+
+                if (response.ok) {
+                    alert('Form submitted successfully!');
+                    form.reset();
+                } else {
+                    alert('Error submitting form. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again later.');
+            }
+        }
+
+        createForm();
+    </script>
+</body>
+</html>

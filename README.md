@@ -15,13 +15,17 @@
    - [Third-Party Service Integration](#third-party-service-integration)
 5. [Data Models](#data-models)
 6. [Configuration](#configuration)
-7. [Testing Procedures](#testing-procedures)
-8. [Scalability and Future Enhancements](#scalability-and-future-enhancements)
-9. [Conclusion](#conclusion)
+7. [Frontend Implementation](#frontend-implementation)
+   - [Features](#features)
+   - [Implementation Details](#frontend-implementation-details)
+   - [Accessing the Frontend](#accessing-the-frontend)
+8. [Testing Procedures](#testing-procedures)
+9. [Scalability and Future Enhancements](#scalability-and-future-enhancements)
+10. [Conclusion](#conclusion)
 
 ## 1. Introduction
 
-This document provides a detailed explanation of how I implemented a Spring Boot application to address the specific requirements of creating an API gateway for dynamic form generation. The application consists of two main endpoints that handle the retrieval of missing fields and the submission of dynamically generated forms.
+This document provides a detailed explanation of how I implemented a Spring Boot application to address the specific requirements of creating an API gateway for dynamic form generation. The application consists of two main endpoints that handle the retrieval of missing fields and the submission of dynamically generated forms, along with a frontend demonstration.
 
 ## 2. System Architecture
 
@@ -36,8 +40,10 @@ The application follows a layered architecture:
 Technologies used:
 - Spring Boot 2.5.5
 - Spring Data JPA
-- H2 Database (for demonstration purposes)
+- Spring MVC
 - Spring Cloud OpenFeign
+- H2 Database (for demonstration purposes)
+- HTML/JavaScript (for frontend demonstration)
 
 ## 3. Endpoint 1: Missing Fields Retrieval
 
@@ -200,7 +206,6 @@ public class User {
     private String birthPlace;
     private String sex;
     private String currentAddress;
-    // Getters and setters
 }
 
 @Entity
@@ -209,7 +214,6 @@ public class RequiredField {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String fieldName;
-    // Getters and setters
 }
 ```
 
@@ -233,36 +237,72 @@ logging.level.com.example.apigateway=DEBUG
 third-party.service.url=${THIRD_PARTY_SERVICE_URL}
 ```
 
-## 7. Testing Procedures
+## 7. Frontend Implementation
 
-To test the application:
+To demonstrate the functionality of the API, a simple HTML frontend has been implemented and is served by the Spring Boot application.
 
-1. Start the application:
+### Features
+
+- Dynamically fetches missing fields for User ID 1
+- Generates an HTML form based on the missing fields
+- Submits the form data to the API
+- Provides user feedback on successful submission or errors
+
+### Implementation Details
+
+The frontend is implemented in a single HTML file (`index.html`) with embedded JavaScript, served by the Spring Boot application. Key features include:
+
+1. **Dynamic Form Generation**: 
+   - Fetches missing fields from `/api/users/1/missing-fields`
+   - Creates form inputs for each missing field
+
+2. **Form Submission**: 
+   - Submits form data to `/api/users/1/submit-form`
+   - Handles response and provides user feedback
+
+### Accessing the Frontend
+
+The frontend can be accessed by navigating to the root URL of the application in a web browser.
+
+## 8. Testing Procedures
+
+To fully test the application, including the frontend:
+
+1. Start the Spring Boot application:
    ```
-   mvn spring-boot:run
+   ./mvnw spring-boot:run
    ```
 
-2. Test Endpoint 1 (Missing Fields Retrieval):
-   ```
-   GET http://localhost:8080/api/users/1/missing-fields
-   ```
+2. Open a web browser and navigate to `http://localhost:8080` to access the frontend.
+   - The form should load automatically, displaying inputs for any missing fields for User ID 1.
+   - Fill in the form and submit.
+   - Check the browser console for detailed information about the requests and responses.
 
-3. Test Endpoint 2 (Dynamic Form Submission):
-   ```
-   POST http://localhost:8080/api/users/1/submit-form
-   Content-Type: application/json
+3. Use Postman or curl to test the backend API directly:
 
-   {
-       "birthDate": "1990-01-01",
-       "birthPlace": "New York",
-       "sex": "Male",
-       "currentAddress": "123 Main St, Anytown, USA"
-   }
-   ```
+   a. Test Endpoint 1 (Missing Fields Retrieval):
+      ```
+      GET http://localhost:8080/api/users/1/missing-fields
+      ```
 
-4. Verify database updates and third-party service call simulation in logs.
+   b. Test Endpoint 2 (Dynamic Form Submission):
+      ```
+      POST http://localhost:8080/api/users/1/submit-form
+      Content-Type: application/json
 
-## 8. Scalability and Future Enhancements
+      {
+          "birthDate": "1990-01-01",
+          "birthPlace": "New York",
+          "sex": "Male",
+          "currentAddress": "123 Main St, Anytown, USA"
+      }
+      ```
+
+4. Verify database updates and third-party service call simulation in the application logs.
+
+5. After submitting the form via the frontend or direct API call, refresh the frontend page or re-test the missing fields endpoint to confirm that the fields have been updated.
+
+## 9. Scalability and Future Enhancements
 
 - Replace H2 with a production-grade database
 - Implement caching for frequently accessed data
@@ -270,6 +310,6 @@ To test the application:
 - Implement API versioning
 - Set up comprehensive logging and monitoring
 
-## 9. Conclusion
+## 10. Conclusion
 
-This Spring Boot application fully addresses the requirements specified in the task. It provides a flexible and scalable solution for dynamic form generation and submission, with the capability to integrate with third-party services. The modular design allows for easy maintenance and future enhancements.
+This Spring Boot application fully addresses the requirements specified in the task. It provides a flexible and scalable solution for dynamic form generation and submission, with the capability to integrate with third-party services. The addition of a frontend demonstration showcases the practical application of the API in a real-world scenario. The modular design allows for easy maintenance and future enhancements.
